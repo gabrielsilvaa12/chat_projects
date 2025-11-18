@@ -6,7 +6,7 @@ project(runner LANGUAGES CXX)
 # the on-disk name of your application.
 set(BINARY_NAME "chat_projects")
 # The unique GTK application identifier for this application. See:
-# https://wiki.gnome.org/HowDoI/ChooseApplicationID
+# https://wiki.gname.org/HowDoI/ChooseApplicationID
 set(APPLICATION_ID "com.example.chat_projects")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
