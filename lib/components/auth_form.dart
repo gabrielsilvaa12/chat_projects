@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:chat/components/user_image_picker.dart';
 import 'package:chat/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +20,26 @@ class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>(); // acessando dados do formulário
   final _formData = AuthFormData(); //usando a classe que foi criada
 
+  void _handleIMagePick(File image) {
+    _formData.image = image;
+  }
+
+  void _showErro(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   void _submit() {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
+
+    if (_formData.image == null && _formData.isSignup) {
+      return _showErro('Imagem não encontrada!');
+    }
 
     widget.onSubmit(_formData);
   }
@@ -36,22 +56,22 @@ class _AuthFormState extends State<AuthForm> {
             children: [
               if (_formData
                   .isSignup) //condicional, o nome só vai aparecer se for modo Signup o nome será renderizado
-                TextFormField(
-                  key: const ValueKey(
-                      'name'), //neste caso está atribuindo o nome ao valor, para não mudar na alternancia.
-                  initialValue: _formData
-                      .name, //usando ele como inicial, mesmo se o valor sumir ele permanece com o valor
-                  onChanged: (name) =>
-                      _formData.name = name, //guardando o valor.
-                  decoration: const InputDecoration(labelText: 'Nome'),
-                  validator: (localName) {
-                    final name = localName ?? '';
-                    if (name.trim().length < 5) {
-                      return 'Nome deve ter no mínimo 5 caracteres';
-                    }
-                    return null;
-                  },
-                ),
+                UserImagePicker(onImagePick: _handleIMagePick),
+              TextFormField(
+                key: const ValueKey(
+                    'name'), //neste caso está atribuindo o nome ao valor, para não mudar na alternancia.
+                initialValue: _formData
+                    .name, //usando ele como inicial, mesmo se o valor sumir ele permanece com o valor
+                onChanged: (name) => _formData.name = name, //guardando o valor.
+                decoration: const InputDecoration(labelText: 'Nome'),
+                validator: (localName) {
+                  final name = localName ?? '';
+                  if (name.trim().length < 5) {
+                    return 'Nome deve ter no mínimo 5 caracteres';
+                  }
+                  return null;
+                },
+              ),
               TextFormField(
                 key: const ValueKey('email'),
                 initialValue: _formData.email,
